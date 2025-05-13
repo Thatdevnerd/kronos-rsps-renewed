@@ -34,7 +34,6 @@ import io.ruin.model.map.route.routes.TargetRoute;
 import io.ruin.model.skills.slayer.Slayer;
 import io.ruin.model.stat.Stat;
 import io.ruin.model.stat.StatType;
-import io.ruin.services.discord.impl.RareDropEmbedMessage;
 import io.ruin.utility.Broadcast;
 import lombok.Getter;
 import lombok.Setter;
@@ -493,7 +492,6 @@ public abstract class NPCCombat extends Combat {
         } else {
             Broadcast.GLOBAL.sendNews(pKiller, message + " from " + npc.getDef().descriptiveName + "!");
         }
-        RareDropEmbedMessage.sendDiscordMessage(message, npc.getDef().descriptiveName, item.getId());
     }
 
     private void getLocalAnnounce(Player pKiller, Item item) {

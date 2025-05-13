@@ -9,7 +9,6 @@ import io.ruin.model.entity.npc.NPC;
 import io.ruin.model.entity.player.Player;
 import io.ruin.model.entity.player.PlayerGroup;
 import io.ruin.network.central.CentralClient;
-import io.ruin.services.discord.DiscordConnection;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
@@ -189,8 +188,6 @@ public class Punishment {
                 builder.addField(field);
             }
         }
-
-        DiscordConnection.post(DiscordConnection.CHANNEL_PUNISHMENTS, builder.build());
     }
 
 }

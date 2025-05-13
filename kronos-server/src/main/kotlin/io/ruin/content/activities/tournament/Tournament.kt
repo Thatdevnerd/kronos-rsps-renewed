@@ -105,7 +105,6 @@ class Tournament(var attributes: TournamentAttributes) {
         inProgress = false
         if (TournamentManager.generateTournament()) {
             TournamentManager.activityTimer = 3.times(60)
-            TournamentManager.pulse()
         } else {
             TournamentManager.activeTournament = null
             TournamentManager.enabled = false

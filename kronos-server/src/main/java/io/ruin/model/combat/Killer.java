@@ -20,8 +20,6 @@ import io.ruin.model.item.actions.impl.boxes.WildernessRewardBox;
 import io.ruin.model.map.Bounds;
 import io.ruin.model.stat.StatType;
 import io.ruin.services.Loggers;
-import io.ruin.services.discord.impl.KillingSpreeEmbedMessage;
-import io.ruin.services.discord.impl.ShutdownEmbedMessage;
 import io.ruin.utility.Broadcast;
 
 public class Killer {
@@ -71,7 +69,6 @@ public class Killer {
                 String spreeMessage = player.getName() + " is on a killing spree of " + killerSpree + ". Kill "
                         + (player.getAppearance().isMale() ? "him" : "her") + " for a bounty reward of " + (BASE_BM_REWARD + bountyValue(killerSpree)) + " Blood money!";
                 Broadcast.WORLD.sendPlain(KillingSpree.imgTag(killerSpree) + Color.DARK_GREEN.tag() + " " + spreeMessage);
-                KillingSpreeEmbedMessage.sendDiscordMessage(spreeMessage);
             }
             if(player.getCombat().isSkulled()) //Overheads start at sprees of 2, so this fits here.
                 player.getAppearance().setSkullIcon(KillingSpree.overheadId(player));
@@ -83,7 +80,6 @@ public class Killer {
         if(targetSpree >= 5) {
             String shutdownMessage = KillingSpree.shutdownMessage(player.getName(), pKilled.getName(), targetSpree);
             Broadcast.WORLD.sendPlain("<img=36> " + Color.DARK_GREEN.tag() + shutdownMessage);
-            ShutdownEmbedMessage.sendDiscordMessage(shutdownMessage);
             if(targetSpree > player.highestShutdown)
                 player.highestShutdown = targetSpree;
         }

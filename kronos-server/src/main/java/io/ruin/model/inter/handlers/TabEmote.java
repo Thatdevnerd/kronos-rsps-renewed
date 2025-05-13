@@ -9,7 +9,6 @@ import io.ruin.model.inter.InterfaceHandler;
 import io.ruin.model.inter.actions.SlotAction;
 import io.ruin.model.inter.utils.Config;
 import io.ruin.model.item.containers.Equipment;
-import org.apache.commons.lang3.RandomUtils;
 
 public enum TabEmote {
 

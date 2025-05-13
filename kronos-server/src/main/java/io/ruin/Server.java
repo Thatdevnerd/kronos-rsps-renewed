@@ -29,7 +29,6 @@ import io.ruin.process.LoginWorker;
 import io.ruin.process.event.EventWorker;
 import io.ruin.services.LatestUpdate;
 import io.ruin.services.Loggers;
-import io.ruin.services.discord.DiscordConnection;
 import io.ruin.utility.CharacterBackups;
 import io.ruin.utility.OfflineMode;
 import kilim.WeavingClassLoader;
@@ -172,9 +171,6 @@ public class Server extends ServerWrapper {
             Loggers.clearOnlinePlayers(World.id);
             LatestUpdate.fetch();
             Giveaway.updateTotalAmount();
-            if(!OfflineMode.enabled && !World.isDev()) {
-                DiscordConnection.setup("NjY2ODYwNTYwNjcxMDQ3Njg5.XiTqtw.aUSPC_CW6Oszpz1Ru1e08AQjsMQ");
-            }
         }
 
 

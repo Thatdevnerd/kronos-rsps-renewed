@@ -5,7 +5,6 @@ import io.ruin.cache.Color
 import io.ruin.model.World
 import io.ruin.model.entity.player.Player
 import io.ruin.model.stat.StatType
-import io.ruin.services.discord.impl.TournamentEmbedMessage
 import io.ruin.utility.Broadcast
 import java.util.*
 
@@ -77,10 +76,6 @@ object TournamentManager {
                 }
             }
         }
-
-        if (generateTournament()) {
-            pulse()
-        }
     }
 
     /**
@@ -105,44 +100,7 @@ object TournamentManager {
     /**
      * The main method of our manager that is processed every cycle of our dedicated event processor.
      */
-    fun pulse() = globalEvent {
-        while(activityTimer != -1) {
-            pause(100)
-            when(activityTimer--) {
-                30 -> {
-                    TournamentEmbedMessage.sendDiscordMessage(activeTournament?.name, "30")
-                    Broadcast.WORLD.sendNews("In 30 minutes a ${activeTournament?.name} Tournament is starting! Type ::tournament to sign up now!")
-                }
-                15 -> {
-                    TournamentEmbedMessage.sendDiscordMessage(activeTournament?.name, "15")
-                    Broadcast.WORLD.sendNews("In 15 minutes a ${activeTournament?.name} Tournament is starting! Type ::tournament to sign up now!")
-                }
-                10 -> {
-                    TournamentEmbedMessage.sendDiscordMessage(activeTournament?.name, "10")
-                    Broadcast.WORLD.sendNews("In 10 minutes a ${activeTournament?.name} Tournament is starting! Type ::tournament to sign up now!")
-                }
-                5 -> {
-                    TournamentEmbedMessage.sendDiscordMessage(activeTournament?.name, "5")
-                    Broadcast.WORLD.sendNews("In five minutes a ${activeTournament?.name} Tournament is starting! Type ::tournament to sign up now!")
-                    broadcast("In five minutes a ${activeTournament?.name} Tournament is starting! Type ::tournament to sign up now!")
-                }
-                1 -> {
-                    if (Lobby.players.size >= 4) {
-                        TournamentEmbedMessage.sendDiscordMessage(activeTournament?.name, "1")
-                        Broadcast.WORLD.sendNews("In one minute a ${activeTournament?.name} Tournament is starting! Type ::tournament to sign up now!")
-                        broadcast("In one minute a ${activeTournament?.name} Tournament is starting! Type ::tournament to sign up now!")
-                    }
-                }
-                0 -> {
-                    activityTimer = if (!begin(activeTournament)) {
-                        5
-                    } else {
-                        -1
-                    }
-                }
-            }
-        }
-    }
+
     private fun broadcast(message: String) {
         for (p in World.players) {
             //If the player has toggle off tournament broadcasts don't send.

@@ -89,7 +89,7 @@ public class KilimAgent {
 
 		public static ClassWeaver weaveClass(ClassLoader loader, String name) {
 			String cname = WeavingClassLoader.makeResourceName(name);
-			InputStream is = WeavingClassLoader.getByteStream(loader,name,cname,false);
+			InputStream is = WeavingClassLoader.getByteStream(loader,name,cname);
 			ClassWeaver cw = weaver.weave(is);
 			return cw;
 		}
