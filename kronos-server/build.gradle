@@ -13,7 +13,7 @@ java {
 
 tasks.withType(KotlinCompile).configureEach {
     kotlinOptions {
-        jvmTarget = "1.8" // Match the Java version above
+        jvmTarget = "11" // Match the Java version above
     }
 }
 

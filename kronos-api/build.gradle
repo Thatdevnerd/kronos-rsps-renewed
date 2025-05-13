@@ -1,6 +1,6 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-//    id 'org.springframework.boot' version '2.2.2.RELEASE'
-//    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
     id 'kotlin'
 }
@@ -9,15 +9,18 @@ version = '1.0'
 ext.group = "server"
 description = ""
 
+// Use the java toolchain API for version configuration
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(1_8) // Choose a version both can support
+        languageVersion = JavaLanguageVersion.of(11) // Match with kronos-server
     }
 }
 
-compileKotlin {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+// Replace the deprecated compileKotlin block with the modern approach
+tasks.withType(KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "11" // Must match Java version
+    }
 }
 
 repositories {
@@ -25,7 +28,6 @@ repositories {
 }
 
 dependencies {
-
     implementation group: 'com.zaxxer', name: 'HikariCP', version:'2.7.3'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.19'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version:'3.9'
@@ -33,7 +35,5 @@ dependencies {
     implementation group: 'com.google.http-client', name: 'google-http-client-jackson2', version:'1.32.1'
     implementation group: 'org.db4j', name: 'kilim', version: '2.0.2'
     implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.8.1'
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-
 }
