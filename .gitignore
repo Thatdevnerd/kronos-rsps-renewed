@@ -10,6 +10,7 @@ CentralServer/src/main/CentralServer.iml
 CentralServer/target/*
 FileServer/target/*
 kronos_rsa
+Cache/
 
 
 kronos-update-server/server.properties
