@@ -1,0 +1,112 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.db4j:kilim:2.0.2'  // Simplified dependency declaration
+    }
+}
+
+plugins {
+    id 'application'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.0' apply false  // Updated Kotlin version
+    id 'io.freefair.lombok' version '8.6' apply false  // More maintained Lombok plugin
+}
+
+allprojects {
+    apply plugin: 'io.freefair.lombok'  // Changed to freefair plugin
+
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://repo.maven.apache.org/maven2"
+        }
+        maven {
+            url "https://repo.adobe.com/nexus/content/repositories/public/"
+        }
+    }
+
+    lombok {
+        version = "1.18.30"  // Updated Lombok version
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.jetbrains.kotlin.jvm'  // Apply Kotlin plugin to subprojects
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)  // Updated Java version
+        }
+    }
+
+    dependencies {
+        implementation 'org.slf4j:slf4j-api:2.0.7'
+        implementation 'org.slf4j:slf4j-simple:2.0.7'
+        implementation 'com.google.guava:guava:32.1.3-jre'
+        implementation 'com.google.code.gson:gson:2.10.1'
+        implementation 'io.netty:netty-all:4.1.100.Final'
+        implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+        implementation 'org.json:json:20231013'
+
+        testImplementation 'junit:junit:4.13.2'
+
+        // Lombok handled by plugin
+        compileOnly 'org.projectlombok:lombok:1.18.30'
+        annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+        implementation 'com.j256.two-factor-auth:two-factor-auth:1.3'
+        implementation 'net.sf.jopt-simple:jopt-simple:6.0-alpha-3'
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "17"
+            freeCompilerArgs += '-Xjsr305=strict'
+        }
+    }
+}
+
+// Deployment tasks remain similar but with improved path handling
+task cleanDist(type: Delete) {
+    delete layout.buildDirectory.dir("collected")
+}
+
+task jarAll {
+    def serverProjects = ["kronos-central-server", "kronos-server", "kronos-update-server", "kronos-server-live"]
+    serverProjects.each { dependsOn("$it:jar") }
+}
+
+task mergeDist {
+    def serverProjects = ["kronos-central-server", "kronos-server", "kronos-update-server", "kronos-server-live"]
+    serverProjects.each { dependsOn("$it:distZip", "$it:collectDist") }
+
+    doLast {
+        fileTree(layout.buildDirectory.dir("collected")).each { file ->
+            if (file.name.endsWith(".zip")) {
+                copy {
+                    from zipTree(file).matching {
+                        include "*/lib/**"
+                        include "*/bin/**"
+                    }
+                    into layout.buildDirectory.dir("collected/unpacked")
+                    includeEmptyDirs = false
+                    eachFile { fcd ->
+                        fcd.relativePath = RelativePath(true, fcd.relativePath.segments.drop(1))
+                    }
+                }
+            }
+        }
+    }
+}
+
+task zipDeploy(type: Zip) {
+    dependsOn mergeDist
+    from fileTree(layout.buildDirectory.dir("collected/unpacked"))
+    include "bin/**", "lib/**"
+    archiveFileName = "deploy.zip"
+    destinationDirectory = layout.buildDirectory.dir("deploy")
+}
+
+mergeDist.dependsOn cleanDist
